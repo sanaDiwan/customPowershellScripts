@@ -8,9 +8,10 @@ if(!$fileName) {$fileName = (get-date).ToString('dddd MM-dd-yyyy HH-mm')}
 if(!$fileFormat) {$fileFormat = "docx"}
 if(!$category) {$category = "Default"}
 $allCategories = "Default"
+$path = 'C:\Users\sdiwan\OneDrive - eshopworld\Notes\'
 
 #Creating folder in one-note so that it can be synced online
-cd 'C:\Users\sdiwan\OneDrive - eshopworld\Notes\'
+Set-Location $path
 
 #Create file with filename
 Write-Host 'creating note '$filename'.'$fileFormat' in category '$category'... '
@@ -22,8 +23,8 @@ if ($category -eq "Default"){
 else {
     mkdir $category
     $allCategories += $category
-    Set-Location 'C:\Users\sdiwan\OneDrive - eshopworld\Notes\'+$category
+    Set-Location $path+$category
     New-Item "$fileName.$fileFormat" -ItemType File
-    Set-Location 'C:\Users\sdiwan\OneDrive - eshopworld\Notes\'
+    Set-Location $path
     code .
 }
