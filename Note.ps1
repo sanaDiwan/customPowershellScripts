@@ -1,8 +1,8 @@
 param
 (
-    $format = "docx",
-
-    $category = "Default"
+    $name,
+    $format,
+    $category
 )
 if(!$name) {$name = (get-date).ToString('dddd MM-dd-yyyy HH-mm')}
 if(!$format) {$format = "docx"}
@@ -26,23 +26,17 @@ function GenerateFile($file, $location)
     New-Item $file -ItemType File
 }
 
-function Open($location)
-{
-    Set-Location $location
-    code .
-}
-
 #Creating folder in one-note so that it can be synced online
 Write-Host 'creating note '$name'.'$format' in category '$category'... '
 
 if ($category -eq "Default")
 {
     GenerateFile "$name.$format" $path
-    Open $path
+    code $path$name.$format
 }
 if (!($category -eq "Default")) 
 {
     CreateCategory $category
     GenerateFile "$name.$format" $path$category
-    Open $path$category
+    code $path$category$name.$format
 }
