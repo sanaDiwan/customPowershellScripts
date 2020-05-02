@@ -1,30 +1,48 @@
 param
 (
-    [parameter(Position=0, Mandatory=$false)][string] $fileName ,
-    [parameter(Position=1, Mandatory=$false)][string] $fileFormat,
-    [parameter(Position=2, Mandatory=$false)][string] $category
+    $format = "docx",
+
+    $category = "Default"
 )
-if(!$fileName) {$fileName = (get-date).ToString('dddd MM-dd-yyyy HH-mm')}
-if(!$fileFormat) {$fileFormat = "docx"}
+if(!$name) {$name = (get-date).ToString('dddd MM-dd-yyyy HH-mm')}
+if(!$format) {$format = "docx"}
 if(!$category) {$category = "Default"}
+
 $allCategories = "Default"
 $path = 'C:\Users\sdiwan\OneDrive - eshopworld\Notes\'
 
-#Creating folder in one-note so that it can be synced online
-Set-Location $path
+function CreateCategory($category)
+{
+    if(!(Test-Path $path$category))
+    {
+        mkdir $category
+        $allCategories += $category
+    }
+}
 
-#Create file with filename
-Write-Host 'creating note '$filename'.'$fileFormat' in category '$category'... '
+function GenerateFile($file, $location)
+{
+    Set-Location $location
+    New-Item $file -ItemType File
+}
 
-if ($category -eq "Default"){
-    New-Item "$fileName.$fileFormat" -ItemType File
+function Open($location)
+{
+    Set-Location $location
     code .
 }
-else {
-    mkdir $category
-    $allCategories += $category
-    Set-Location $path+$category
-    New-Item "$fileName.$fileFormat" -ItemType File
-    Set-Location $path
-    code .
+
+#Creating folder in one-note so that it can be synced online
+Write-Host 'creating note '$name'.'$format' in category '$category'... '
+
+if ($category -eq "Default")
+{
+    GenerateFile "$name.$format" $path
+    Open $path
+}
+if (!($category -eq "Default")) 
+{
+    CreateCategory $category
+    GenerateFile "$name.$format" $path$category
+    Open $path$category
 }
