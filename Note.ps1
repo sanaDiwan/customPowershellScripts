@@ -20,6 +20,13 @@ function CreateCategory($category)
     }
 }
 
+function Open($location, $format){
+    if($format -eq "docx"){
+        Invoke-Item $location
+    }
+    if(!($format -eq "docx")){code $location}
+}
+
 function GenerateFile($file, $location)
 {
     Set-Location $location
@@ -32,11 +39,11 @@ Write-Host 'creating note '$name'.'$format' in category '$category'... '
 if ($category -eq "Default")
 {
     GenerateFile "$name.$format" $path
-    code $path$name.$format
+    Open $path$name.$format $format
 }
 if (!($category -eq "Default")) 
 {
     CreateCategory $category
     GenerateFile "$name.$format" $path$category
-    code $path$category$name.$format
+    Open $path$category$name.$format $format
 }
